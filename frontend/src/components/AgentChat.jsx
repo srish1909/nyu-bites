@@ -8,7 +8,7 @@ const SUGGESTIONS = [
   "Where can I get student discounts on sushi?",
 ];
 
-export default function AgentChat() {
+export default function AgentChat({ userLocation }) {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -30,7 +30,7 @@ export default function AgentChat() {
     setMessages((m) => [...m, { role: "user", text: q }]);
     setLoading(true);
     try {
-      const data = await askAgent(q, null, null);
+      const data = await askAgent(q, userLocation?.lat ?? null, userLocation?.lng ?? null);
       setMessages((m) => [...m, { role: "assistant", text: data.response }]);
     } catch {
       setMessages((m) => [

@@ -11,7 +11,18 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState("browse");
   const [authChecked, setAuthChecked] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
   const { toast, show } = useToast();
+
+  // Request location once at app level so AgentChat can use it too
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {},
+      { timeout: 8000 }
+    );
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -70,9 +81,9 @@ export default function App() {
     <div style={s.shell}>
       <Nav view={view} setView={setView} user={user} onLogout={handleLogout} />
       <main style={s.main}>
-        {view === "browse" && <Browse />}
+        {view === "browse" && <Browse userLocation={userLocation} />}
         {view === "saved" && <Saved />}
-        {view === "agent" && <AgentChat />}
+        {view === "agent" && <AgentChat userLocation={userLocation} />}
       </main>
       <Toast toast={toast} />
     </div>

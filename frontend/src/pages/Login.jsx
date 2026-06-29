@@ -22,8 +22,16 @@ export default function Login({ onLogin }) {
     setLoading(true);
     try {
       if (mode === "register") {
-        await register(form.nyu_email, form.password, form.display_name);
-        setRegistered(true);
+        const user = await register(form.nyu_email, form.password, form.display_name);
+        if (user.is_verified) {
+          // Dev mode: auto-verified — just log straight in
+          const data = await login(form.nyu_email, form.password);
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("refresh_token", data.refresh_token);
+          onLogin();
+        } else {
+          setRegistered(true); // production: show "check your email"
+        }
       } else {
         const data = await login(form.nyu_email, form.password);
         localStorage.setItem("access_token", data.access_token);
