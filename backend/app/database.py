@@ -4,7 +4,7 @@ from app.config import settings
 from app.models.base import Base  # noqa: F401 — re-exported for convenience
 
 engine = create_async_engine(
-    settings.database_url,
+    settings.async_database_url,
     echo=settings.environment == "development",
     pool_pre_ping=True,
 )

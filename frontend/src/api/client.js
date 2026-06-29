@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const client = axios.create({ baseURL: "/api/v1" });
+// In production (Render static site), REACT_APP_API_URL is set at build time.
+// In local dev, CRA's proxy (package.json "proxy") handles /api/v1 → http://api:8000.
+const baseURL = process.env.REACT_APP_API_URL || "/api/v1";
+
+const client = axios.create({ baseURL });
 
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");

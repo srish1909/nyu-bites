@@ -51,5 +51,13 @@ class Settings(BaseSettings):
     def origins_list(self) -> list[str]:
         return [o.strip() for o in self.allowed_origins.split(",")]
 
+    @property
+    def async_database_url(self) -> str:
+        """Ensures the URL uses the asyncpg driver, regardless of how it was provided."""
+        url = self.database_url
+        if url.startswith("postgresql://") and "+asyncpg" not in url:
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
+
 
 settings = Settings()
