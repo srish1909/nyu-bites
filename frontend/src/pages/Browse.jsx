@@ -26,7 +26,7 @@ export default function Browse({ userLocation }) {
     try {
       const params = {};
       if (filters.search) params.search = filters.search;
-      if (filters.cuisine_type) params.cuisine_type = filters.cuisine_type;
+      if (filters.cuisine_type) params.cuisine = filters.cuisine_type;
       if (filters.discount_type) params.discount_type = filters.discount_type;
       if (filters.open_now) params.open_now = true;
       if (filters.is_verified) params.is_verified = true;
