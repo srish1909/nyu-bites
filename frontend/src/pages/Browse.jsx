@@ -109,6 +109,17 @@ export default function Browse({ userLocation }) {
           </>
         )}
       </div>
+
+      {/* Footer */}
+      <footer style={s.footer}>
+        <div style={s.footerInner}>
+          <span style={s.footerLogo}>🍕 NYU Bites</span>
+          <span style={s.footerDivider}>·</span>
+          <span style={s.footerText}>Built for NYU students, by an NYU student</span>
+          <span style={s.footerDivider}>·</span>
+          <span style={s.footerSub}>© {new Date().getFullYear()} · All discounts subject to change</span>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -159,4 +170,23 @@ const s = {
   emptyIcon: { fontSize: 40, marginBottom: 12 },
   emptyText: { fontSize: 17, fontWeight: 700, color: "#aaa", margin: "0 0 6px" },
   emptyHint: { fontSize: 13, color: "#ccc" },
+  footer: {
+    marginTop: "auto",
+    borderTop: "1px solid #e8e4f0",
+    background: "#fff",
+    padding: "18px 24px",
+  },
+  footerInner: {
+    maxWidth: 760,
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  footerLogo: { fontWeight: 800, fontSize: 14, color: "#57068c" },
+  footerDivider: { color: "#cbd5e1", fontSize: 14 },
+  footerText: { fontSize: 13, color: "#64748b", fontWeight: 600 },
+  footerSub: { fontSize: 12, color: "#94a3b8" },
 };

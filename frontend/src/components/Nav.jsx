@@ -12,7 +12,6 @@ export default function Nav({ view, setView, user, onLogout }) {
         {[
           { id: "browse", label: "Browse" },
           { id: "saved", label: "Saved" },
-          { id: "agent", label: "✦ Ask AI" },
         ].map(({ id, label }) => (
           <button
             key={id}

@@ -12,6 +12,7 @@ export default function App() {
   const [view, setView] = useState("browse");
   const [authChecked, setAuthChecked] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const { toast, show } = useToast();
 
   // Request location once at app level so AgentChat can use it too
@@ -83,8 +84,22 @@ export default function App() {
       <main style={s.main}>
         {view === "browse" && <Browse userLocation={userLocation} />}
         {view === "saved" && <Saved />}
-        {view === "agent" && <AgentChat userLocation={userLocation} />}
       </main>
+
+      {/* Floating AI chat bubble */}
+      <div style={s.floatWrap}>
+        {chatOpen && (
+          <AgentChat userLocation={userLocation} onClose={() => setChatOpen(false)} />
+        )}
+        <button
+          style={{ ...s.fab, ...(chatOpen ? s.fabOpen : {}) }}
+          onClick={() => setChatOpen(o => !o)}
+          title="Ask AI"
+        >
+          {chatOpen ? "✕" : "✦"}
+        </button>
+      </div>
+
       <Toast toast={toast} />
     </div>
   );
@@ -93,6 +108,36 @@ export default function App() {
 const s = {
   shell: { minHeight: "100vh", background: "#f7f7f7", fontFamily: "system-ui, -apple-system, sans-serif" },
   main: { flex: 1 },
+  floatWrap: {
+    position: "fixed",
+    bottom: 24,
+    right: 24,
+    zIndex: 999,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: 12,
+  },
+  fab: {
+    width: 56,
+    height: 56,
+    borderRadius: "50%",
+    background: "linear-gradient(135deg, #3d0066, #57068c)",
+    border: "none",
+    color: "#fff",
+    fontSize: 22,
+    cursor: "pointer",
+    boxShadow: "0 4px 20px rgba(87,6,140,0.4)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "transform 0.2s, box-shadow 0.2s",
+    fontFamily: "inherit",
+  },
+  fabOpen: {
+    background: "#475569",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+  },
   splash: {
     minHeight: "100vh",
     background: "#57068c",

@@ -11,7 +11,7 @@ Flow:
 import json
 import logging
 
-from openai import AsyncOpenAI, AuthenticationError, RateLimitError
+from openai import AsyncOpenAI, AuthenticationError, BadRequestError, RateLimitError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.tools import TOOL_HANDLERS, TOOL_SCHEMAS, _nyc_now
@@ -78,20 +78,30 @@ async def run_agent(user_query: str, db: AsyncSession, max_iterations: int = 6) 
 
     client, model = _get_client()
 
+    _groq_retries = 0
     try:
         for iteration in range(max_iterations):
-            response = await client.chat.completions.create(
-                model=model,
-                messages=messages,
-                tools=TOOL_SCHEMAS,
-                tool_choice="auto",
-                temperature=0.3,  # lower = more consistent, less hallucination
-            )
+            try:
+                response = await client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    tools=TOOL_SCHEMAS,
+                    tool_choice="auto",
+                    temperature=0.3,
+                    parallel_tool_calls=False,
+                )
+            except BadRequestError as exc:
+                # Groq sometimes generates malformed tool calls — retry up to 2 times
+                if "tool_use_failed" in str(exc) and _groq_retries < 2:
+                    _groq_retries += 1
+                    logger.warning("Groq malformed tool call, retry %d", _groq_retries)
+                    continue
+                raise
             message = response.choices[0].message
 
             # Model returned a plain-text answer — we're done
             if not message.tool_calls:
-                return message.content or ""
+                return message.content or "I couldn't find anything for that. Try rephrasing!"
 
             # Append the assistant's message (contains the tool call requests)
             messages.append(message.model_dump(exclude_unset=True))
