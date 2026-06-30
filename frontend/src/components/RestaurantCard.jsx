@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { saveRestaurant, unsaveRestaurant } from "../api/restaurants";
 
 const PRICE = { 1: "$", 2: "$$", 3: "$$$", 4: "$$$$" };
@@ -39,6 +39,16 @@ export default function RestaurantCard({ restaurant: r, isSaved = false, onSaveT
   const [saved, setSaved] = useState(isSaved);
   const [savingLoad, setSavingLoad] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [sceneHeight, setSceneHeight] = useState("auto");
+  const frontRef = useRef(null);
+  const backRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (frontRef.current && backRef.current) {
+      const h = Math.max(frontRef.current.offsetHeight, backRef.current.offsetHeight);
+      setSceneHeight(h);
+    }
+  }, []);
 
   async function handleSave(e) {
     e.stopPropagation();
@@ -63,12 +73,12 @@ export default function RestaurantCard({ restaurant: r, isSaved = false, onSaveT
   }
 
   return (
-    <div style={s.scene} onClick={() => setFlipped(f => !f)} title="Click to flip">
+    <div style={{ ...s.scene, height: sceneHeight }} onClick={() => setFlipped(f => !f)} title="Click to flip">
 
       <div style={{ ...s.card, transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
 
         {/* ─── FRONT ─── */}
-        <div style={s.face}>
+        <div ref={frontRef} style={s.face}>
           {/* Gradient header */}
           <div style={{ ...s.cardHeader, background: `linear-gradient(135deg, ${color}22, ${color}08)`, borderBottom: `3px solid ${color}` }}>
             <div style={s.cardHeaderInner}>
@@ -131,7 +141,7 @@ export default function RestaurantCard({ restaurant: r, isSaved = false, onSaveT
         </div>
 
         {/* ─── BACK ─── */}
-        <div style={{ ...s.face, ...s.backFace }}>
+        <div ref={backRef} style={{ ...s.face, ...s.backFace }}>
           <div style={{ ...s.cardHeader, background: `linear-gradient(135deg, ${color}22, ${color}08)`, borderBottom: `3px solid ${color}` }}>
             <div style={s.cardHeaderInner}>
               <div style={s.cuisineEmoji}>{getCuisineEmoji(r.cuisine_type)}</div>
