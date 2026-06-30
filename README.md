@@ -1,76 +1,63 @@
 # NYU Bites 🍕
 
-A restaurant and cafe discount discovery platform exclusively for NYU students. Find the best student deals near campus, save your favorites, and ask an AI assistant for personalized recommendations.
+A full-stack web app that surfaces exclusive student discounts at restaurants and cafes around NYU campus. Browse deals, save favorites, and ask an AI assistant for personalized recommendations — all behind NYU email-only access.
 
-## Features
+**[Live Demo →](https://YOUR-RAILWAY-URL-HERE)**
 
-- **Browse & Filter** — Search restaurants by cuisine, price range, discount type, and open-now status
-- **Student Discounts** — Verified deals including % off, fixed discounts, free items, and student menus
-- **Save Favorites** — Bookmark restaurants to your personal list
-- **AI Assistant** — Ask natural language questions like *"cheap sushi open late near Washington Square Park"*
-- **NYU-only Access** — Registration requires an `@nyu.edu` email address
+![NYU Bites Browse Page](./docs/screenshot.png)
+
+---
 
 ## Tech Stack
 
-**Backend**
-- [FastAPI](https://fastapi.tiangolo.com/) — async Python web framework
-- [PostgreSQL](https://www.postgresql.org/) + [SQLAlchemy 2.0](https://www.sqlalchemy.org/) — database & ORM
-- [Redis](https://redis.io/) — caching and token storage
-- [Groq](https://groq.com/) (llama-3.3-70b) — AI agent with tool calling
-- JWT authentication with refresh token rotation
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite, Nginx |
+| Backend | FastAPI (Python, async) |
+| Database | PostgreSQL + SQLAlchemy 2.0 |
+| Cache / Auth | Redis — JWT refresh token rotation & revocation |
+| AI | Groq API — llama-3.3-70b with tool calling |
+| Deployment | Railway (4 services) |
 
-**Frontend**
-- [React 18](https://react.dev/) — component-based UI
-- Axios — API client with auth interceptors
+---
 
-**Infrastructure**
-- Docker Compose — local development
-- [Render](https://render.com/) — production deployment
+## Features
 
-## Local Development
+- **Browse & filter** by cuisine, discount type, open-now status, and verified-only listings
+- **Geolocation** — requests browser location once at app level and sorts results by distance using the Haversine formula
+- **AI chat assistant** — ask natural-language questions like *"cheap pizza near campus open late"* answered with live database context via Groq
+- **Flip cards** — tap any card to reveal full deal conditions, phone number, and a Google Maps link
+- **Save restaurants** — heart any listing; saved list is persisted per account
+- **Secure auth** — short-lived JWT access tokens, Redis-backed refresh token rotation, bcrypt-hashed passwords, and email verification flow
+
+---
+
+## Local Setup
 
 ### Prerequisites
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Docker Desktop
 
-### Setup
-
-1. Clone the repo
-   ```bash
-   git clone https://github.com/srish1909/nyu-bites.git
-   cd nyu-bites
-   ```
-
-2. Create a `.env` file in the root directory
-   ```env
-   POSTGRES_USER=nyubites
-   POSTGRES_PASSWORD=changeme
-   POSTGRES_DB=nyubites
-   DATABASE_URL=postgresql+asyncpg://nyubites:changeme@db:5432/nyubites
-   REDIS_URL=redis://redis:6379/0
-   SECRET_KEY=your-secret-key-here
-   ENVIRONMENT=development
-   GROQ_API_KEY=your-groq-api-key
-   ```
-
-3. Start all services
-   ```bash
-   docker compose up -d
-   ```
-
-4. Seed the database with sample restaurants
-   ```bash
-   docker exec nyu-bites-api-1 python -m scripts.seed
-   ```
-
-5. Open the app at [http://localhost:3000](http://localhost:3000)
-
-The API docs are available at [http://localhost:8000/docs](http://localhost:8000/docs).
-
-### Running Tests
+### Run
 
 ```bash
-docker exec nyu-bites-api-1 python -m pytest tests/ -v
+git clone https://github.com/srish1909/nyu-bites.git
+cd nyu-bites
+cp .env.example .env        # fill in your secrets
+docker compose up --build
 ```
+
+| | URL |
+|---|---|
+| App | http://localhost:3000 |
+| API docs | http://localhost:8000/docs |
+
+### Seed sample data
+
+```bash
+docker exec nyu-bites-api-1 python -m scripts.seed
+```
+
+---
 
 ## Project Structure
 
@@ -78,41 +65,42 @@ docker exec nyu-bites-api-1 python -m pytest tests/ -v
 nyu-bites/
 ├── backend/
 │   ├── app/
-│   │   ├── agent/        # AI agent and tools
-│   │   ├── api/v1/       # REST endpoints
-│   │   ├── core/         # security, cache, email, rate limiting
-│   │   ├── models/       # SQLAlchemy models
-│   │   ├── schemas/      # Pydantic schemas
-│   │   └── services/     # auth service (Redis token ops)
-│   ├── alembic/          # database migrations
-│   └── tests/            # pytest test suite
+│   │   ├── api/v1/       # routers: auth, users, restaurants, agent
+│   │   ├── models/       # SQLAlchemy ORM models
+│   │   ├── schemas/      # Pydantic request/response schemas
+│   │   ├── services/     # token creation, rotation, revocation
+│   │   ├── agent/        # Groq AI agent + tool definitions
+│   │   └── core/         # security, email, Redis, rate limiting
+│   └── scripts/          # DB seed scripts
 └── frontend/
     └── src/
-        ├── api/          # axios client + endpoint functions
-        ├── components/   # Nav, RestaurantCard, FilterBar, AgentChat
+        ├── api/          # Axios client + typed endpoint functions
+        ├── components/   # Nav, FilterBar, RestaurantCard, AgentChat, Toast
         └── pages/        # Browse, Saved, Login
 ```
 
-## API Endpoints
+---
+
+## Key API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/auth/register` | Register with @nyu.edu email |
-| POST | `/api/v1/auth/login` | Login, receive JWT + refresh token |
-| POST | `/api/v1/auth/refresh` | Rotate refresh token |
-| POST | `/api/v1/auth/logout` | Revoke tokens |
-| GET | `/api/v1/restaurants/` | List restaurants (with filters) |
-| POST | `/api/v1/restaurants/` | Submit a new restaurant |
-| GET | `/api/v1/users/me/saved` | Get saved restaurants |
-| POST | `/api/v1/agent/query` | Ask the AI assistant |
+|---|---|---|
+| POST | `/api/v1/auth/register` | Register with `@nyu.edu` email |
+| POST | `/api/v1/auth/login` | Returns JWT + refresh token |
+| POST | `/api/v1/auth/refresh` | Rotates refresh token |
+| GET | `/api/v1/restaurants/` | List restaurants with filters |
+| GET | `/api/v1/users/me/saved` | Saved restaurants for current user |
+| POST | `/api/v1/agent/query` | AI assistant query |
 
-## Environment Variables
+---
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `REDIS_URL` | Redis connection string |
-| `SECRET_KEY` | JWT signing secret |
-| `GROQ_API_KEY` | Groq API key for the AI agent |
-| `ENVIRONMENT` | `development` or `production` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS origins |
+## Deployment
+
+Hosted on **Railway** with four separate services — backend (Uvicorn), frontend (Nginx), PostgreSQL, and Redis. Environment variables and secrets are managed per-service in the Railway dashboard.
+
+---
+
+## Author
+
+Built by **Srish** · NYU student  
+[LinkedIn](https://linkedin.com/in/YOUR-LINKEDIN) · [GitHub](https://github.com/srish1909)
