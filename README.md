@@ -102,7 +102,7 @@ Hosted on **Railway** with four separate services — backend (Uvicorn), fronten
 
 ## Author
 
-<img src="./picture.png" width="80" style="border-radius: 50%" alt="Srish" />
+<img src="./picture.png" width="80" alt="Srish" />
 
 **Srish** · NYU student  
 [LinkedIn](https://linkedin.com/in/YOUR-LINKEDIN) · [GitHub](https://github.com/srish1909)
