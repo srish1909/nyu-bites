@@ -30,8 +30,8 @@ export default function AgentChat({ userLocation }) {
     setMessages((m) => [...m, { role: "user", text: q }]);
     setLoading(true);
     try {
-      const data = await askAgent(q, userLocation?.lat ?? null, userLocation?.lng ?? null);
-      setMessages((m) => [...m, { role: "assistant", text: data.response }]);
+      const answer = await askAgent(q, userLocation?.lat ?? null, userLocation?.lng ?? null);
+      setMessages((m) => [...m, { role: "assistant", text: answer }]);
     } catch {
       setMessages((m) => [
         ...m,

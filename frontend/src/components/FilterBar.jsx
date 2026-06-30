@@ -1,8 +1,8 @@
 import React from "react";
 
 const CUISINES = [
-  "All", "Pizza", "Sushi", "Burgers", "Mexican", "Chinese",
-  "Indian", "Italian", "Thai", "Mediterranean", "Coffee",
+  "All", "Pizza", "Cafe", "Mexican", "Chinese",
+  "Middle Eastern", "Italian", "American", "Falafel", "Bagels",
 ];
 
 const DISCOUNT_TYPES = [

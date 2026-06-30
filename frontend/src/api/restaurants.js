@@ -16,4 +16,4 @@ export const getSaved = () =>
   client.get("/users/me/saved").then((r) => r.data);
 
 export const askAgent = (query, lat, lng) =>
-  client.post("/agent/query", { query, lat, lng }).then((r) => r.data);
+  client.post("/agent/query", { query, lat, lng }).then((r) => r.data.answer);
