@@ -66,8 +66,8 @@ async def register(
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # In dev, auto-verify so you can hit protected endpoints without clicking a link.
-    auto_verify = settings.environment == "development"
+    # Auto-verify when email backend is console (no real emails sent).
+    auto_verify = settings.email_backend == "console"
 
     user = User(
         nyu_email=payload.nyu_email,

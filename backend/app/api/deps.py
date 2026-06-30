@@ -44,7 +44,8 @@ async def get_current_user(
 
 
 async def get_verified_user(current_user: User = Depends(get_current_user)) -> User:
-    if not current_user.is_verified:
+    from app.config import settings
+    if not current_user.is_verified and settings.email_backend != "console":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Check your inbox for the verification link.",
