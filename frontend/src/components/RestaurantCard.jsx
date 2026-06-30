@@ -237,6 +237,7 @@ const s = {
     transformStyle: "preserve-3d",
     WebkitTransformStyle: "preserve-3d",
     transition: "transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)",
+    height: "100%",
   },
   face: {
     backfaceVisibility: "hidden",
@@ -247,12 +248,15 @@ const s = {
     border: "1px solid rgba(0,0,0,0.06)",
     overflow: "hidden",
     transition: "box-shadow 0.2s",
+    height: "100%",
+    boxSizing: "border-box",
   },
   backFace: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
     transform: "rotateY(180deg)",
   },
 
