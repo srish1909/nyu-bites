@@ -250,6 +250,8 @@ const s = {
     transition: "box-shadow 0.2s",
     height: "100%",
     boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
   },
   backFace: {
     position: "absolute",
@@ -342,6 +344,7 @@ const s = {
     display: "flex",
     flexDirection: "column",
     gap: 8,
+    flex: 1,
   },
   distChip: {
     fontSize: 12,
@@ -403,7 +406,8 @@ const s = {
     fontSize: 11,
     color: "#94a3b8",
     textAlign: "center",
-    marginTop: 2,
+    marginTop: "auto",
+    paddingTop: 8,
     fontWeight: 500,
     letterSpacing: "0.3px",
   },
