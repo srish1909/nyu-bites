@@ -2,7 +2,7 @@
 
 A full-stack web app that surfaces exclusive student discounts at restaurants and cafes around NYU campus. Browse deals, save favorites, and ask an AI assistant for personalized recommendations — all behind NYU email-only access.
 
-**[Live Demo →](https://YOUR-RAILWAY-URL-HERE)**
+**[Live Demo →](https://extraordinary-communication-production-b988.up.railway.app/)**
 
 ![NYU Bites Browse Page](./docs/screenshot.png)
 
