@@ -4,7 +4,7 @@ A full-stack web app that surfaces exclusive student discounts at restaurants an
 
 **[Live Demo →](https://extraordinary-communication-production-b988.up.railway.app/)**
 
-![NYU Bites Browse Page](./docs/pictures.png)
+![NYU Bites Browse Page](./picture.png)
 
 ---
 
